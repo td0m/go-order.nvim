@@ -6,5 +6,5 @@
 
 ```lua
 -- with lazy
-{ "td0m/go-order.nvim" }
+{ "td0m/go-order.nvim", init = {} }
 ```
