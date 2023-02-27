@@ -1,3 +1,7 @@
+local ts_utils = require("nvim-treesitter.ts_utils")
+
+local M = {}
+
 local function get_root(node)
 	if node == nil then
 		return nil
@@ -25,7 +29,6 @@ local function parse_root_nodes()
 	local nodes = {}
 	local comments = {}
 
-	local ts_utils = require("nvim-treesitter.ts_utils")
 	local at_cursor = ts_utils.get_node_at_cursor()
 	local root = get_root(at_cursor)
 	if root == nil then
@@ -146,7 +149,7 @@ local function print_node(bufnr, node)
 	return get_node_text(0, node)
 end
 
-local function order()
+function M.order()
 	local root_nodes = parse_root_nodes()
 	if root_nodes == nil then
 		return nil
@@ -169,14 +172,13 @@ local function order()
 	vim.api.nvim_buf_set_lines(0, 0, -1, false, lines)
 end
 
-return {
-	setup = function()
-		vim.api.nvim_create_user_command("GoOrder", order, {})
-	end,
-	order = order,
-}
+function M.setup(options)
+	require("go-order.config").setup(options)
+	vim.api.nvim_create_user_command("GoOrder", M.order, {})
+end
 
 -- TODO: GoOrderProject to run GoOrder on all go files in current project
 -- TODO: build into an external plugin
 -- TODO: add null-ls handler
 -- TODO: remove dependency on nvim-treesitter
+return M
